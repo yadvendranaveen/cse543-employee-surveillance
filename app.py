@@ -6,8 +6,8 @@ import plotly.express as px
 from consent_database import get_consent_data, update_consent, calculate_consent_percentages
 
 # Google OAuth credentials
-GOOGLE_CLIENT_ID = 'your-google-client-id'
-GOOGLE_CLIENT_SECRET = 'your-google-client-secret'
+GOOGLE_CLIENT_ID = '1018954428849-41hvrlha5o373eobtu0dtitkd498fkrd.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
 GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
 # Function to get Google OAuth2 session and endpoints
