@@ -69,37 +69,44 @@ st.write("Manage your consent for data monitoring in the workplace.")
 # Choose to login or continue as guest
 mode = st.radio("Choose an option:", ["Login with Google", "Continue as Guest"])
 
+query_params = st.experimental_get_query_params()
+print('here', query_params, st.session_state)
+
 if mode == "Login with Google":
     # Handle Google login
     if 'google_user_info' not in st.session_state:
+        # Display the Google login link
         login_url = google_login()
         st.markdown(f"[Login with Google]({login_url})")
-    else:
-        user_info = st.session_state['google_user_info']
-        user_id = user_info['id']
-        st.write(f"Welcome {user_info['name']}!")
-
-        # Fetch current consent data
-        consent_data = get_consent_data(user_id)
-        location_tracking, screen_time_tracking, activity_monitoring = (
-            consent_data[1:] if consent_data else (0, 0, 0)
-        )
-
-        # Display monitoring categories with checkboxes
-        st.header("Monitoring Categories")
-        location = st.checkbox("Location Tracking", value=bool(location_tracking))
-        screen_time = st.checkbox("Screen Time Tracking", value=bool(screen_time_tracking))
-        activity = st.checkbox("Activity Monitoring", value=bool(activity_monitoring))
-
-        # Save consent choices
-        if st.button("Save Preferences"):
-            update_consent(user_id, int(location), int(screen_time), int(activity))
-            st.success("Your preferences have been saved.")
-            st.rerun()  # Trigger app rerun to reflect changes
-  # Trigger app rerun to reflect changes
-
-        # Display current consent preferences
-        display_preferences(location, screen_time, activity)
+        st.session_state['google_user_info'] = {'id': login_url}
+        print('to login')
+    # else:
+    #     print('after login')
+        # User is logged in, get their details
+        # user_info = st.session_state['google_user_info']
+        # user_id = user_info['id']
+        # # st.write(f"Welcome, {user_info['name']}!")
+        #
+        # # Fetch current consent data for the logged-in user
+        # consent_data = get_consent_data(user_id)
+        # location_tracking, screen_time_tracking, activity_monitoring = (
+        #     consent_data[1:] if consent_data else (0, 0, 0)
+        # )
+        #
+        # # Display monitoring categories with checkboxes
+        # st.header("Set Your Consent Preferences")
+        # location = st.checkbox("Location Tracking", value=bool(location_tracking))
+        # screen_time = st.checkbox("Screen Time Tracking", value=bool(screen_time_tracking))
+        # activity = st.checkbox("Activity Monitoring", value=bool(activity_monitoring))
+        #
+        # # Save consent choices when the user clicks "Save Preferences"
+        # if st.button("Save Preferences"):
+        #     update_consent(user_id, int(location), int(screen_time), int(activity))
+        #     st.success("Your preferences have been saved.")
+        #     st.experimental_rerun()  # Trigger app rerun to refresh the UI
+        #
+        # # Display current consent preferences
+        # display_preferences(location, screen_time, activity)
 
 elif mode == "Continue as Guest":
     # Allow preference selection without login
@@ -126,5 +133,31 @@ elif mode == "Continue as Guest":
     # Display current consent preferences
     display_preferences(location, screen_time, activity)
 
+print('here2', query_params, st.session_state)
+if st.session_state['google_user_info']:
+    user_info = st.session_state['google_user_info']
+    user_id = user_info['id']
+    # st.write(f"Welcome, {user_info['name']}!")
+
+    # Fetch current consent data for the logged-in user
+    consent_data = get_consent_data(user_id)
+    location_tracking, screen_time_tracking, activity_monitoring = (
+        consent_data[1:] if consent_data else (0, 0, 0)
+    )
+
+    # Display monitoring categories with checkboxes
+    st.header("Set Your Consent Preferences")
+    location = st.checkbox("Location Tracking", value=bool(location_tracking))
+    screen_time = st.checkbox("Screen Time Tracking", value=bool(screen_time_tracking))
+    activity = st.checkbox("Activity Monitoring", value=bool(activity_monitoring))
+
+    # Save consent choices when the user clicks "Save Preferences"
+    if st.button("Save Preferences"):
+        update_consent(user_id, int(location), int(screen_time), int(activity))
+        st.success("Your preferences have been saved.")
+        # st.experimental_rerun()  # Trigger app rerun to refresh the UI
+
+    # Display current consent preferences
+    display_preferences(location, screen_time, activity)
 # Display consent analytics
 display_analytics()
